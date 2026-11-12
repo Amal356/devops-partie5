@@ -7,8 +7,8 @@
 | TP | Sujet | Dossier | État |
 |---|---|---|---|
 | TP13 | Cloud local (Floci), AWS CLI, SDK, Terraform : module, state distant verrouillé, environnements, Trivy IaC, OpenTofu | [tp13/](tp13/README.md) | ✅ 8/8 captures |
-| TP14 | Kubernetes avec K3s | `tp14/` | ⏳ en cours |
-| TP15 | Helm et Kustomize | `tp15/` | ⏳ à venir |
+| TP14 | Kubernetes avec K3s (plan B mono-nœud) : Pods, Deployments, Services, Ingress, ConfigMap/Secret, sondes, rollback, PVC, HPA | [tp14/](tp14/README.md) | ✅ 7/7 captures |
+| TP15 | Helm et Kustomize | `tp15/` | ⏳ en cours |
 
 ## Fil rouge sécurité
 - Aucun identifiant cloud réel : émulateur local, identifiants factices.
