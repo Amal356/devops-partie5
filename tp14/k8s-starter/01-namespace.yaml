@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tp14
+  labels:
+    # Pod Security Admission : on refuse les pods privilégiés dans ce namespace
+    pod-security.kubernetes.io/enforce: baseline

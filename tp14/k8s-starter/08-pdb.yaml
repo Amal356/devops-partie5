@@ -1,0 +1,10 @@
+# Challenge 2 : au moins 1 pod whoami doit rester disponible pendant un drain
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: whoami
+  namespace: tp14
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels: { app: whoami }

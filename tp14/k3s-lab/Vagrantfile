@@ -1,0 +1,34 @@
+# TP14 : cluster K3s 2 nœuds (1 server + 1 agent). Ansible ne tourne qu'une fois, après la dernière VM.
+# Challenge 1 : ajouter un 3e nœud = ajouter une ligne dans NODES.
+NODES = [
+  { name: "k3s-server", ip: "192.168.56.10", role: "server", cpus: 2, mem: 2048 },
+  { name: "k3s-agent1", ip: "192.168.56.11", role: "agent",  cpus: 1, mem: 1536 },
+  # { name: "k3s-agent2", ip: "192.168.56.12", role: "agent", cpus: 1, mem: 1536 },
+]
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "bento/ubuntu-24.04"
+  config.vm.boot_timeout = 900
+
+  NODES.each_with_index do |node, i|
+    config.vm.define node[:name] do |n|
+      n.vm.hostname = node[:name]
+      n.vm.network "private_network", ip: node[:ip]
+      n.vm.provider "virtualbox" do |vb|
+        vb.cpus = node[:cpus]
+        vb.memory = node[:mem]
+      end
+      if i == NODES.size - 1
+        n.vm.provision "ansible" do |a|
+          a.playbook = "playbook.yml"
+          a.limit = "all"
+          a.groups = {
+            "server" => NODES.select { |x| x[:role] == "server" }.map { |x| x[:name] },
+            "agent"  => NODES.select { |x| x[:role] == "agent" }.map { |x| x[:name] },
+          }
+          a.host_vars = NODES.to_h { |x| [x[:name], { "node_ip" => x[:ip] }] }
+        end
+      end
+    end
+  end
+end

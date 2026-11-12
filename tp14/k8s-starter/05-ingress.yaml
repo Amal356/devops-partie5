@@ -1,0 +1,75 @@
+# Route / vers whoami
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: whoami
+  namespace: tp14
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: whoami.lab.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service: { name: whoami, port: { number: 80 } }
+---
+# TODO complété : nginx servi sous /api (le préfixe /api est retiré avant d'arriver à nginx)
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-api
+  namespace: tp14
+spec:
+  stripPrefix:
+    prefixes: ["/api"]
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api
+  namespace: tp14
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: tp14-strip-api@kubernetescrd
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: whoami.lab.local
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service: { name: nginx, port: { number: 80 } }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: tp14
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: nginx }
+  template:
+    metadata:
+      labels: { app: nginx }
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: nginx
+          image: nginx:1.29-alpine
+          ports: [{ containerPort: 80 }]
+          resources:
+            requests: { cpu: 10m, memory: 16Mi }
+            limits:   { cpu: 100m, memory: 64Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: tp14
+spec:
+  selector: { app: nginx }
+  ports: [{ port: 80, targetPort: 80 }]

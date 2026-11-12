@@ -1,0 +1,14 @@
+# Playbook converti en rôle : toute la logique est dans roles/k3s
+- name: K3s server
+  hosts: server
+  become: true
+  roles:
+    - role: k3s
+      vars: { k3s_role: server }
+
+- name: K3s agents
+  hosts: agent
+  become: true
+  roles:
+    - role: k3s
+      vars: { k3s_role: agent }

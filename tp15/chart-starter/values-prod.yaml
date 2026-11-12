@@ -1,0 +1,9 @@
+replicaCount: 3
+ingress:
+  enabled: false
+env:
+  WHOAMI_NAME: prod
+  LOG_LEVEL: warn
+resources:
+  requests: { cpu: 50m, memory: 32Mi }
+  limits:   { cpu: 250m, memory: 128Mi }

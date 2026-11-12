@@ -1,0 +1,10 @@
+- name: Installer l'agent K3s (idempotent)
+  ansible.builtin.shell: >
+    curl -sfL https://get.k3s.io |
+    INSTALL_K3S_VERSION={{ k3s_version }}
+    K3S_URL=https://{{ k3s_server_ip }}:6443
+    K3S_TOKEN={{ hostvars[groups['server'][0]].k3s_token }}
+    sh -s - agent --node-ip {{ node_ip }}
+  args:
+    creates: /usr/local/bin/k3s
+  no_log: true

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: whoami-config
+  namespace: tp14
+data:
+  APP_ENV: lab
+  APP_COLOR: blue
+# Le Secret n'est PAS versionné : il est créé en ligne de commande
+#   kubectl -n tp14 create secret generic whoami-secret --from-literal=api-key='lab-only-value'
