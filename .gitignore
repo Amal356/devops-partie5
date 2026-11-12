@@ -1,0 +1,16 @@
+# Terraform / OpenTofu
+.terraform/
+*.tfstate
+*.tfstate.*
+tfplan
+*.tflock
+crash.log
+# Secrets et clés
+*.key
+*.pem
+.env
+k3s.yaml
+kubeconfig*
+# Divers
+node_modules/
+.vagrant/

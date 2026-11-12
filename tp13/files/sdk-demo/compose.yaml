@@ -1,0 +1,21 @@
+# TP13 partie 2 : Floci et le programme SDK dans le même réseau Compose.
+# Dans ce réseau, Floci est joignable par son NOM DE SERVICE : http://floci:4566
+# (localhost désignerait le conteneur sdk-demo lui-même).
+services:
+  floci:
+    image: floci/floci
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock   # Lambda exécute les fonctions dans des conteneurs
+
+  sdk-demo:
+    image: node:24-alpine
+    working_dir: /app
+    volumes:
+      - ./:/app
+    environment:
+      AWS_ENDPOINT_URL: http://floci:4566
+      AWS_REGION: us-east-1
+      BUCKET: tp13-demo
+    # réessaie tant que Floci n'est pas prêt
+    command: sh -c "npm install --no-audit --no-fund --silent && until npm start --silent; do sleep 3; done"
+    depends_on: [floci]
